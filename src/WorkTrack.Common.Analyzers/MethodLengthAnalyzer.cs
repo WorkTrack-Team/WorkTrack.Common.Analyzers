@@ -24,7 +24,7 @@ public sealed class MethodLengthAnalyzer : DiagnosticAnalyzer
     private const string TargetPrefixesKey = "wt_common_analyzer_target_prefixes";
     private static readonly string[] DefaultTargetPrefixes = ["WorkTrack."];
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    private static readonly DiagnosticDescriptor Rule = new(
         id: DiagnosticId,
         title: "Метод слишком длинный",
         messageFormat: "Метод содержит {0} строк внутри тела. Допустимо не более {1} строк.",
@@ -34,7 +34,7 @@ public sealed class MethodLengthAnalyzer : DiagnosticAnalyzer
         description: "Методы должны быть лаконичными, чтобы поддерживать читабельность и следовать архитектурным требованиям WorkTrack. Настройте через .editorconfig: dotnet_analyzer_diagnostic.wt_common_method_length_max_lines = число.");
 
     /// <inheritdoc />
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
@@ -103,7 +103,7 @@ public sealed class MethodLengthAnalyzer : DiagnosticAnalyzer
         if (length > maxLines)
         {
             var diagnostic = DiagnosticFactory.CreateMethodTooLong(
-                rule: _rule,
+                rule: Rule,
                 location: location,
                 actualLines: length,
                 maxLines: maxLines);

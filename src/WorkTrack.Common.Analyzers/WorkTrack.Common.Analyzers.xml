@@ -60,7 +60,7 @@
             Анализирует методы и требует суффикс Async для Task/ValueTask методов в прод-коде.
             </summary>
         </member>
-        <member name="F:WorkTrack.Common.Analyzers.AsyncSuffixAnalyzer._diagnosticId">
+        <member name="F:WorkTrack.Common.Analyzers.AsyncSuffixAnalyzer.DiagnosticId">
             <summary>
             Диагностический идентификатор правила.
             </summary>
@@ -184,7 +184,7 @@
             Требует file-scoped namespace и контролирует, что в файле только один публичный тип.
             </summary>
         </member>
-        <member name="F:WorkTrack.Common.Analyzers.NamespaceStyleAnalyzer._diagnosticIdFileScoped">
+        <member name="F:WorkTrack.Common.Analyzers.NamespaceStyleAnalyzer.DiagnosticIdFileScoped">
             <summary>
             Диагностический идентификатор правила file-scoped namespace.
             </summary>

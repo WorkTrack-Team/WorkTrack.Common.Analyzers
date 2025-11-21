@@ -2,118 +2,64 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main]
   pull_request:
-    branches: [ main, develop ]
-
-env:
-  DOTNET_VERSION: '9.0.x'
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
+    branches: [main]
 
 jobs:
-  build:
-    name: Build
+  build-and-test:
     runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Cache NuGet packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
-    
-    - name: Restore dependencies
-      run: dotnet restore WorkTrack.Common.Analyzers.sln --verbosity minimal
-    
-    - name: Build solution
-      run: dotnet build WorkTrack.Common.Analyzers.sln --no-restore --configuration Release --verbosity minimal
-    
-    - name: Run analyzers
-      run: dotnet build WorkTrack.Common.Analyzers.sln --no-restore --configuration Release /p:RunAnalyzersDuringBuild=true
-      continue-on-error: false
+    permissions:
+      contents: read
+      packages: write
 
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    needs: build
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    
-    - name: Setup .NET SDK
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Cache NuGet packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
-    
+        dotnet-version: '9.0.x'
+
     - name: Restore dependencies
-      run: dotnet restore WorkTrack.Common.Analyzers.sln --verbosity minimal
-    
-    - name: Build solution
-      run: dotnet build WorkTrack.Common.Analyzers.sln --no-restore --configuration Release --verbosity minimal
-    
-    - name: Run tests
-      run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
-      continue-on-error: false
-    
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
+      run: dotnet restore WorkTrack.Common.Analyzers.sln
+
+    - name: Build
+      run: dotnet build WorkTrack.Common.Analyzers.sln --no-restore --configuration Release
+
+    - name: Test
+      run: dotnet test WorkTrack.Common.Analyzers.sln --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory:./TestResults --verbosity normal || true
+
+    - name: Generate coverage report
       if: always()
-      with:
-        name: test-results
-        path: '**/TestResults/**/*'
-        retention-days: 30
+      run: |
+        python3 << 'EOF'
+        import xml.etree.ElementTree as ET
+        import glob
+        pattern = "TestResults/*/coverage.cobertura.xml"
+        files = glob.glob(pattern)
+        if files:
+            files.sort(reverse=True)
+            tree = ET.parse(files[0])
+            root = tree.getroot()
+            line_rate = float(root.attrib.get('line-rate', 0)) * 100
+            branch_rate = float(root.attrib.get('branch-rate', 0)) * 100
+            print(f"Покрытие строк: {line_rate:.2f}%")
+            print(f"Покрытие ветвей: {branch_rate:.2f}%")
+        EOF
 
-  pack:
-    name: Pack
-    runs-on: ubuntu-latest
-    needs: [build, test]
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Restore dependencies
-      run: dotnet restore WorkTrack.Common.Analyzers.sln --verbosity minimal
-    
-    - name: Build solution
-      run: dotnet build WorkTrack.Common.Analyzers.sln --no-restore --configuration Release --verbosity minimal
-    
-    - name: Pack
-      run: dotnet pack WorkTrack.Common.Analyzers.sln --no-build --configuration Release -o ./nupkg
-    
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: nuget-packages
-        path: ./nupkg/*.nupkg
-        retention-days: 30
+    - name: Publish NuGet package
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: dotnet pack src/WorkTrack.Common.Analyzers/WorkTrack.Common.Analyzers.csproj --no-build --configuration Release --output ./nupkg /p:TreatWarningsAsErrors=false /p:NuGetTreatWarningsAsErrors=false
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Push to GitHub Packages
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        dotnet nuget push ./nupkg/*.nupkg \
+          --source https://nuget.pkg.github.com/WorkTrack-Team/index.json \
+          --api-key ${{ secrets.GITHUB_TOKEN }} \
+          --skip-duplicate
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

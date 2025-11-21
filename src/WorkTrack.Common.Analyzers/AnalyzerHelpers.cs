@@ -11,7 +11,7 @@ namespace WorkTrack.Common.Analyzers;
 /// </summary>
 public static class AnalyzerHelpers
 {
-    private static readonly ConcurrentDictionary<string, bool> _testAssemblyCache = new();
+    private static readonly ConcurrentDictionary<string, bool> TestAssemblyCache = new();
 
     /// <summary>
     /// Проверяет, является ли сборка тестовой.
@@ -28,7 +28,7 @@ public static class AnalyzerHelpers
         }
 
         var assemblyName = compilation.AssemblyName ?? string.Empty;
-        return _testAssemblyCache.GetOrAdd(
+        return TestAssemblyCache.GetOrAdd(
             key: assemblyName,
             valueFactory: name => name.IndexOf(value: "Tests", comparisonType: StringComparison.OrdinalIgnoreCase) >= 0);
     }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -18,7 +17,7 @@ public sealed class GuardClauseAnalyzer : DiagnosticAnalyzer
     /// </summary>
     public const string DiagnosticId = "WTI0005";
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    private static readonly DiagnosticDescriptor Rule = new(
         id: DiagnosticId,
         title: "Метод должен начинаться с Guard.Against",
         messageFormat: "Метод '{0}' должен начинаться с вызова Guard.Against для входных аргументов",
@@ -28,7 +27,7 @@ public sealed class GuardClauseAnalyzer : DiagnosticAnalyzer
         description: "Публичные и internal методы/конструкторы обязаны проверять входные аргументы через Guard.Against.");
 
     /// <inheritdoc />
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
@@ -122,7 +121,7 @@ public sealed class GuardClauseAnalyzer : DiagnosticAnalyzer
     {
         var methodName = context.ContainingSymbol?.Name ?? "method";
         var diagnostic = DiagnosticFactory.CreateMissingGuardClause(
-            rule: _rule,
+            rule: Rule,
             location: location,
             methodName: methodName);
         context.ReportDiagnostic(diagnostic: diagnostic);

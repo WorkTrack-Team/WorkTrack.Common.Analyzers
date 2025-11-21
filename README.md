@@ -2,8 +2,8 @@
 
 Общие Roslyn анализаторы и настройки для всех сервисов WorkTrack.
 
-**Версия**: 1.0.0  
-**Статус**: ✅ В разработке
+**Версия**: 1.0.1  
+**Статус**: ✅ Готов к использованию
 
 ## Описание
 
@@ -73,21 +73,51 @@ dotnet_diagnostic.WTI0001.severity = none
 
 ### Установка пакета
 
-1. **Добавить версию пакета в `Directory.Packages.props`** (если используется централизованное управление):
+#### Шаг 1: Настройка источника пакетов
+
+Если пакет опубликован в GitHub Packages, добавьте `nuget.config` в корень проекта:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key="github" value="https://nuget.pkg.github.com/WorkTrack-Team/index.json" />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+  </packageSources>
+  <packageSourceMapping>
+    <packageSource key="github">
+      <package pattern="WorkTrack.Common.*" />
+    </packageSource>
+    <packageSource key="nuget.org">
+      <package pattern="*" />
+    </packageSource>
+  </packageSourceMapping>
+</configuration>
+```
+
+#### Шаг 2: Добавить версию пакета
+
+Добавьте версию пакета в `Directory.Packages.props` (если используется централизованное управление):
 ```xml
 <ItemGroup>
-  <PackageVersion Include="WorkTrack.Common.Analyzers" Version="1.0.0" />
+  <PackageVersion Include="WorkTrack.Common.Analyzers" Version="1.0.1" />
 </ItemGroup>
 ```
 
-2. **Добавить ссылку на пакет в каждый `.csproj`**, который должен использовать анализаторы:
+#### Шаг 3: Добавить ссылку на пакет
+
+Добавьте ссылку на пакет в каждый `.csproj`, который должен использовать анализаторы:
 ```xml
 <ItemGroup>
-  <PackageReference Include="WorkTrack.Common.Analyzers" />
+  <PackageReference Include="WorkTrack.Common.Analyzers" PrivateAssets="all" />
 </ItemGroup>
 ```
 
-**Важно:** Пакет нужно добавить в **каждый проект**, который должен анализироваться. Анализаторы не применяются автоматически ко всему solution.
+**Важно:** 
+- Пакет нужно добавить в **каждый проект**, который должен анализироваться
+- Анализаторы не применяются автоматически ко всему solution
+- Используйте `PrivateAssets="all"` чтобы анализаторы не попадали в зависимости вашего пакета
 
 ### Автоматическая установка
 
@@ -97,16 +127,26 @@ dotnet_diagnostic.WTI0001.severity = none
 ```powershell
 $projects = Get-ChildItem -Recurse -Filter "*.csproj" | Where-Object { $_.FullName -notmatch "Tests|WorkTrack.Common.Analyzers" }
 foreach ($project in $projects) {
-    dotnet add $project.FullName package WorkTrack.Common.Analyzers
+    dotnet add $project.FullName package WorkTrack.Common.Analyzers --version 1.0.1
 }
 ```
 
 **Bash:**
 ```bash
 find . -name "*.csproj" -not -path "*/Tests/*" -not -path "*/WorkTrack.Common.Analyzers/*" | while read proj; do
-    dotnet add "$proj" package WorkTrack.Common.Analyzers
+    dotnet add "$proj" package WorkTrack.Common.Analyzers --version 1.0.1
 done
 ```
+
+### Проверка установки
+
+После установки выполните:
+```bash
+dotnet restore
+dotnet build
+```
+
+Анализаторы должны начать работать автоматически. Если видите предупреждения/ошибки от `WTI0001-WTI0007`, значит установка прошла успешно.
 
 ### Настройка через .editorconfig
 

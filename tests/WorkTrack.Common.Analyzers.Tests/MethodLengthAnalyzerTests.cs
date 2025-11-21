@@ -1,9 +1,7 @@
-using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 using Xunit;
-using WorkTrack.Common.Analyzers;
-using VerifyCS = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<WorkTrack.Common.Analyzers.MethodLengthAnalyzer>;
-using AnalyzerTestState = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<
+// Используем DefaultVerifier для совместимости с разными версиями xUnit
+using VerifyCS = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<
     WorkTrack.Common.Analyzers.MethodLengthAnalyzer,
     Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
@@ -20,7 +18,7 @@ public sealed class MethodLengthAnalyzerTests
     [Fact]
     public async Task MethodExceedingLimit_ReportsDiagnostic()
     {
-        var test = @"
+        const string test = @"
 namespace WorkTrack.Test;
 
 public class TestClass
@@ -37,11 +35,30 @@ public class TestClass
 }
 ";
 
-        var expected = VerifyCS.Diagnostic(MethodLengthAnalyzer.DiagnosticId)
-            .WithLocation(0)
-            .WithArguments(6, 5);
+        var testState = new VerifyCS 
+        { 
+            TestCode = test,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+        
+        // Устанавливаем явное имя файла с префиксом WorkTrack для срабатывания анализатора
+        testState.TestState.Sources.Clear();
+        testState.TestState.Sources.Add(("WorkTrack.Test/TestClass.cs", test));
+        
+        // Добавляем конфигурацию для анализатора
+        testState.TestState.AnalyzerConfigFiles.Add(
+            ("/.editorconfig", @"
+root = true
 
-        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+[*.cs]
+wt_common_method_length_max_lines = 5
+wt_common_analyzer_target_prefixes = WorkTrack.
+"));
+        testState.ExpectedDiagnostics.Add(
+            DiagnosticResult.CompilerError(MethodLengthAnalyzer.DiagnosticId)
+                .WithSpan("WorkTrack.Test/TestClass.cs", 6, 17, 6, 27)
+                .WithArguments(6, 5));
+        await testState.RunAsync();
     }
 
     /// <summary>
@@ -50,7 +67,7 @@ public class TestClass
     [Fact]
     public async Task MethodWithinLimit_NoDiagnostic()
     {
-        var test = @"
+        const string test = @"
 namespace WorkTrack.Test;
 
 public class TestClass
@@ -64,7 +81,15 @@ public class TestClass
 }
 ";
 
-        await VerifyCS.VerifyAnalyzerAsync(test);
+        var testState = new VerifyCS 
+        { 
+            TestCode = test,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+        // Устанавливаем явное имя файла
+        testState.TestState.Sources.Clear();
+        testState.TestState.Sources.Add(("WorkTrack.Test/TestClass.cs", test));
+        await testState.RunAsync();
     }
 
     /// <summary>
@@ -73,7 +98,7 @@ public class TestClass
     [Fact]
     public async Task ExpressionBodiedMethod_NoDiagnostic()
     {
-        var test = @"
+        const string test = @"
 namespace WorkTrack.Test;
 
 public class TestClass
@@ -82,7 +107,15 @@ public class TestClass
 }
 ";
 
-        await VerifyCS.VerifyAnalyzerAsync(test);
+        var testState = new VerifyCS 
+        { 
+            TestCode = test,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+        // Устанавливаем явное имя файла
+        testState.TestState.Sources.Clear();
+        testState.TestState.Sources.Add(("WorkTrack.Test/TestClass.cs", test));
+        await testState.RunAsync();
     }
 
     /// <summary>
@@ -91,7 +124,7 @@ public class TestClass
     [Fact]
     public async Task CustomMaxLinesFromEditorConfig_RespectsConfiguration()
     {
-        var test = @"
+        const string test = @"
 namespace WorkTrack.Test;
 
 public class TestClass
@@ -109,11 +142,14 @@ public class TestClass
 }
 ";
 
-        var testState = new AnalyzerTestState
+        var testState = new VerifyCS
         {
             TestCode = test,
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
         };
+        // Устанавливаем явное имя файла
+        testState.TestState.Sources.Clear();
+        testState.TestState.Sources.Add(("WorkTrack.Test/TestClass.cs", test));
 
         // Добавляем конфигурацию через .editorconfig
         testState.TestState.AnalyzerConfigFiles.Add(
@@ -124,6 +160,102 @@ root = true
 wt_common_method_length_max_lines = 10
 "));
 
+        await testState.RunAsync();
+    }
+
+    /// <summary>
+    /// Проверяет, что анализатор проверяет локальные функции.
+    /// </summary>
+    [Fact]
+    public async Task LocalFunctionExceedingLimit_ReportsDiagnostic()
+    {
+        const string test = @"
+namespace WorkTrack.Test;
+
+public class TestClass
+{
+    public void ShortMethod()
+    {
+        void {|#0:LocalFunction|}()
+        {
+            var x = 1;
+            var y = 2;
+            var z = 3;
+            var a = 4;
+            var b = 5;
+            var c = 6; // 6 lines > 5
+        }
+    }
+}
+";
+
+        var testState = new VerifyCS
+        {
+            TestCode = test,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+        testState.TestState.Sources.Clear();
+        testState.TestState.Sources.Add(("WorkTrack.Test/TestClass.cs", test));
+        
+        testState.TestState.AnalyzerConfigFiles.Add(
+            ("/.editorconfig", @"
+root = true
+
+[*.cs]
+wt_common_method_length_max_lines = 5
+wt_common_analyzer_target_prefixes = WorkTrack.
+"));
+        // Анализатор сообщает о двух диагностиках: для внешнего метода и локальной функции
+        testState.ExpectedDiagnostics.Add(
+            DiagnosticResult.CompilerError(MethodLengthAnalyzer.DiagnosticId)
+                .WithSpan("WorkTrack.Test/TestClass.cs", 6, 17, 6, 28)
+                .WithArguments(9, 5));
+        testState.ExpectedDiagnostics.Add(
+            DiagnosticResult.CompilerError(MethodLengthAnalyzer.DiagnosticId)
+                .WithSpan("WorkTrack.Test/TestClass.cs", 8, 14, 8, 27)
+                .WithArguments(6, 5));
+        await testState.RunAsync();
+    }
+
+    /// <summary>
+    /// Проверяет, что анализатор не проверяет файлы без префикса WorkTrack.
+    /// </summary>
+    [Fact]
+    public async Task FileWithoutTargetPrefix_NoDiagnostic()
+    {
+        const string test = @"
+namespace Other.Test;
+
+public class TestClass
+{
+    public void LongMethod()
+    {
+        var x = 1;
+        var y = 2;
+        var z = 3;
+        var a = 4;
+        var b = 5;
+        var c = 6; // 6 lines > 5, но файл не в WorkTrack
+    }
+}
+";
+
+        var testState = new VerifyCS
+        {
+            TestCode = test,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+        testState.TestState.Sources.Clear();
+        testState.TestState.Sources.Add(("Other.Test/TestClass.cs", test));
+        
+        testState.TestState.AnalyzerConfigFiles.Add(
+            ("/.editorconfig", @"
+root = true
+
+[*.cs]
+wt_common_method_length_max_lines = 5
+wt_common_analyzer_target_prefixes = WorkTrack.
+"));
         await testState.RunAsync();
     }
 }

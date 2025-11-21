@@ -17,6 +17,15 @@ wt_common_method_length_max_lines = 5
 # Можно указать несколько префиксов через запятую или точку с запятой
 wt_common_analyzer_target_prefixes = WorkTrack.
 
+# Отключаем все анализаторы WorkTrack для самого проекта анализаторов
+[WorkTrack.Common.Analyzers/**/*.cs]
+dotnet_diagnostic.WTI0001.severity = none
+dotnet_diagnostic.WTI0002.severity = none
+dotnet_diagnostic.WTI0004.severity = none
+dotnet_diagnostic.WTI0005.severity = none
+dotnet_diagnostic.WTI0006.severity = none
+dotnet_diagnostic.WTI0007.severity = none
+
 # Уровни серьезности для анализаторов WorkTrack
 # Возможные значения: error, warning, suggestion, silent, none
 dotnet_diagnostic.WTI0001.severity = error

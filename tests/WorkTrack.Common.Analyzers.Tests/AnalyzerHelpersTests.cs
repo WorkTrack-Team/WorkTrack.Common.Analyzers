@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
@@ -67,6 +66,32 @@ public sealed class AnalyzerHelpersTests
             assemblyName: assemblyName,
             syntaxTrees: [syntaxTree],
             references: [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)]);
+    }
+
+    /// <summary>
+    /// Проверяет, что IsTestAssembly возвращает false для null compilation.
+    /// </summary>
+    [Fact]
+    public void IsTestAssembly_NullCompilation_ReturnsFalse()
+    {
+        // Act
+        var result = AnalyzerHelpers.IsTestAssembly(null!);
+
+        // Assert
+        Assert.False(result);
+    }
+
+    /// <summary>
+    /// Проверяет, что IsTestFile возвращает false для null пути.
+    /// </summary>
+    [Fact]
+    public void IsTestFile_NullPath_ReturnsFalse()
+    {
+        // Act
+        var result = AnalyzerHelpers.IsTestFile(null);
+
+        // Assert
+        Assert.False(result);
     }
 }
 

@@ -1,6 +1,4 @@
-using System;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace WorkTrack.Common.Analyzers;
 

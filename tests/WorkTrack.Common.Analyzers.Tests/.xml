@@ -24,6 +24,121 @@
             Проверяет, что IsTestFile корректно определяет тестовые файлы.
             </summary>
         </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AnalyzerHelpersTests.IsTestAssembly_NullCompilation_ReturnsFalse">
+            <summary>
+            Проверяет, что IsTestAssembly возвращает false для null compilation.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AnalyzerHelpersTests.IsTestFile_NullPath_ReturnsFalse">
+            <summary>
+            Проверяет, что IsTestFile возвращает false для null пути.
+            </summary>
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests">
+            <summary>
+            Unit-тесты для <see cref="T:WorkTrack.Common.Analyzers.AsyncSuffixAnalyzer"/>.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.AsyncMethodWithoutSuffix_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об отсутствии суффикса Async у async метода.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.TaskMethodWithoutSuffix_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об отсутствии суффикса Async у метода возвращающего Task.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.ValueTaskMethodWithoutSuffix_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об отсутствии суффикса Async у метода возвращающего ValueTask.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.AsyncMethodWithSuffix_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке, если метод имеет суффикс Async.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.OverrideMethod_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет override методы.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.InterfaceImplementation_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет методы реализующие интерфейс.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.NonAsyncMethod_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет не-async методы.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.AbstractMethod_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет abstract методы.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.ExplicitInterfaceImplementation_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет explicit interface implementation.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.GenericMethodWithAsyncSuffix_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет generic методы с суффиксом Async.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.ExternMethod_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет extern методы.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AsyncSuffixAnalyzerTests.MethodWithoutLocations_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет методы без locations.
+            </summary>
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.Tests.ForbiddenDateTimeAnalyzerTests">
+            <summary>
+            Unit-тесты для <see cref="T:WorkTrack.Common.Analyzers.ForbiddenDateTimeAnalyzer"/>.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.ForbiddenDateTimeAnalyzerTests.DateTimeNow_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об использовании DateTime.Now.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.ForbiddenDateTimeAnalyzerTests.DateTimeUtcNow_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об использовании DateTime.UtcNow.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.ForbiddenDateTimeAnalyzerTests.DateTimeOffsetNow_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об использовании DateTimeOffset.Now.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.ForbiddenDateTimeAnalyzerTests.DateTimeOffsetUtcNow_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об использовании DateTimeOffset.UtcNow.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.ForbiddenDateTimeAnalyzerTests.DateTimeOtherProperty_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об использовании других свойств DateTime.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.ForbiddenDateTimeAnalyzerTests.OtherTypeProperty_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об использовании других типов.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.ForbiddenDateTimeAnalyzerTests.NonPropertyMemberAccess_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке, если символ не является property.
+            </summary>
+        </member>
         <member name="T:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests">
             <summary>
             Unit-тесты для <see cref="T:WorkTrack.Common.Analyzers.GuardClauseAnalyzer"/>.
@@ -49,6 +164,71 @@
             Проверяет, что анализатор не проверяет методы без параметров.
             </summary>
         </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.ConstructorWithoutGuard_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об отсутствии Guard.Against в конструкторе.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithEmptyBody_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для метода с пустым телом.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithNonExpressionFirstStatement_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об ошибке, если первое statement не является ExpressionStatement.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithAwaitGuard_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для метода с await Guard.Against.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithRefParameter_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для метода с ref параметрами.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithNullableParameter_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для метода с nullable параметрами.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithOutParameter_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для метода с out параметрами.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithGenericParameter_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для метода с generic параметрами.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.InternalMethodWithoutGuard_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об ошибке для internal метода.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithReferenceTypeParameter_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об ошибке для метода с reference type параметром.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithNullableReferenceType_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для метода с nullable reference type параметром.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.ProtectedMethod_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для protected метода.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithGuardAgainst_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для метода с GuardAgainst (альтернативное имя).
+            </summary>
+        </member>
         <member name="T:WorkTrack.Common.Analyzers.Tests.MethodLengthAnalyzerTests">
             <summary>
             Unit-тесты для <see cref="T:WorkTrack.Common.Analyzers.MethodLengthAnalyzer"/>.
@@ -72,6 +252,56 @@
         <member name="M:WorkTrack.Common.Analyzers.Tests.MethodLengthAnalyzerTests.CustomMaxLinesFromEditorConfig_RespectsConfiguration">
             <summary>
             Проверяет, что анализатор читает конфигурацию из .editorconfig.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.MethodLengthAnalyzerTests.LocalFunctionExceedingLimit_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор проверяет локальные функции.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.MethodLengthAnalyzerTests.FileWithoutTargetPrefix_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет файлы без префикса WorkTrack.
+            </summary>
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.Tests.NamespaceStyleAnalyzerTests">
+            <summary>
+            Unit-тесты для <see cref="T:WorkTrack.Common.Analyzers.NamespaceStyleAnalyzer"/>.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.NamespaceStyleAnalyzerTests.TraditionalNamespace_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об использовании обычного namespace вместо file-scoped.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.NamespaceStyleAnalyzerTests.FileScopedNamespace_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для file-scoped namespace.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.NamespaceStyleAnalyzerTests.MultiplePublicTypes_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает о нескольких публичных типах в файле.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.NamespaceStyleAnalyzerTests.SinglePublicType_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для одного публичного типа.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.NamespaceStyleAnalyzerTests.MultipleInternalTypes_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает о нескольких internal типах.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.NamespaceStyleAnalyzerTests.PrivateTypes_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке для одного публичного типа с вложенными классами.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.NamespaceStyleAnalyzerTests.TestFile_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет тестовые файлы.
             </summary>
         </member>
     </members>

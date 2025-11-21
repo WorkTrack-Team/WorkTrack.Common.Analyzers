@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -18,15 +17,15 @@ public sealed class NamespaceStyleAnalyzer : DiagnosticAnalyzer
     /// <summary>
     /// Диагностический идентификатор правила file-scoped namespace.
     /// </summary>
-    private const string _diagnosticIdFileScoped = "WTI0006";
+    private const string DiagnosticIdFileScoped = "WTI0006";
 
     /// <summary>
     /// Диагностический идентификатор правила единственного публичного типа.
     /// </summary>
     public const string DiagnosticIdSingleType = "WTI0007";
 
-    private static readonly DiagnosticDescriptor _fileScopedRule = new(
-        id: _diagnosticIdFileScoped,
+    private static readonly DiagnosticDescriptor FileScopedRule = new(
+        id: DiagnosticIdFileScoped,
         title: "Используйте file-scoped namespace",
         messageFormat: "Namespace должен быть объявлен в file-scoped стиле",
         category: "WorkTrack.Common.Namespaces",
@@ -34,7 +33,7 @@ public sealed class NamespaceStyleAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true,
         description: "Все файлы должны использовать file-scoped namespace (namespace Foo.Bar;).");
 
-    private static readonly DiagnosticDescriptor _singleTypeRule = new(
+    private static readonly DiagnosticDescriptor SingleTypeRule = new(
         id: DiagnosticIdSingleType,
         title: "Только один публичный тип в файле",
         messageFormat: "Файл содержит несколько публичных типов: {0}",
@@ -44,7 +43,7 @@ public sealed class NamespaceStyleAnalyzer : DiagnosticAnalyzer
         description: "Файл должен содержать максимум один публичный/интерфейсный тип.");
 
     /// <inheritdoc />
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_fileScopedRule, _singleTypeRule];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [FileScopedRule, SingleTypeRule];
 
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
@@ -76,7 +75,7 @@ public sealed class NamespaceStyleAnalyzer : DiagnosticAnalyzer
 
         Location location = namespaceDeclaration.Name.GetLocation();
         var diagnostic = DiagnosticFactory.CreateInvalidNamespaceStyle(
-            rule: _fileScopedRule,
+            rule: FileScopedRule,
             location: location,
             namespaceName: namespaceDeclaration.Name.ToString());
         context.ReportDiagnostic(diagnostic: diagnostic);
@@ -95,7 +94,7 @@ public sealed class NamespaceStyleAnalyzer : DiagnosticAnalyzer
 
         var names = string.Join(separator: ", ", values: publicTypes.Select(selector: t => t.Identifier.Text));
         var diagnostic = DiagnosticFactory.CreateInvalidNamespaceStyle(
-            rule: _singleTypeRule,
+            rule: SingleTypeRule,
             location: publicTypes[index: 1].Identifier.GetLocation(),
             namespaceName: names);
         context.ReportDiagnostic(diagnostic: diagnostic);

@@ -18,7 +18,7 @@ public sealed class ForbiddenDateTimeAnalyzer : DiagnosticAnalyzer
     /// </summary>
     public const string DiagnosticId = "WTI0004";
 
-    private static readonly DiagnosticDescriptor _rule = new(
+    private static readonly DiagnosticDescriptor Rule = new(
         id: DiagnosticId,
         title: "Неиспользуемые напрямую DateTime/DateTimeOffset",
         messageFormat: "Нельзя использовать {0}. Используйте IClock/SystemClock.",
@@ -28,7 +28,7 @@ public sealed class ForbiddenDateTimeAnalyzer : DiagnosticAnalyzer
         description: "Вместо DateTime.UtcNow/Now нужно использовать IClock/SystemClock для удобства тестирования.");
 
     /// <inheritdoc />
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
@@ -71,7 +71,7 @@ public sealed class ForbiddenDateTimeAnalyzer : DiagnosticAnalyzer
 
         var fullyQualified = property.ContainingType.ToDisplayString(format: SymbolDisplayFormat.FullyQualifiedFormat) + "." + property.Name;
         var diagnostic = DiagnosticFactory.CreateForbiddenDateTimeProperty(
-            rule: _rule,
+            rule: Rule,
             location: location,
             propertyName: fullyQualified);
         context.ReportDiagnostic(diagnostic: diagnostic);

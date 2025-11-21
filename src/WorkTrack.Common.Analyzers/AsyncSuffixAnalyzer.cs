@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -15,10 +14,10 @@ public sealed class AsyncSuffixAnalyzer : DiagnosticAnalyzer
     /// <summary>
     /// Диагностический идентификатор правила.
     /// </summary>
-    private const string _diagnosticId = "WTI0002";
+    private const string DiagnosticId = "WTI0002";
 
-    private static readonly DiagnosticDescriptor _rule = new(
-        id: _diagnosticId,
+    private static readonly DiagnosticDescriptor Rule = new(
+        id: DiagnosticId,
         title: "Метод асинхронный, но не заканчивается на Async",
         messageFormat: "Асинхронный метод '{0}' должен оканчиваться суффиксом 'Async'. Переименуйте метод.",
         category: "WorkTrack.Common.AsyncNaming",
@@ -27,7 +26,7 @@ public sealed class AsyncSuffixAnalyzer : DiagnosticAnalyzer
         description: "Все асинхронные методы в продуктивном коде должны заканчиваться на 'Async' для единообразия и читаемости.");
 
     /// <inheritdoc />
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [_rule];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
@@ -76,7 +75,7 @@ public sealed class AsyncSuffixAnalyzer : DiagnosticAnalyzer
         }
 
         var diagnostic = DiagnosticFactory.CreateMissingAsyncSuffix(
-            rule: _rule,
+            rule: Rule,
             location: location,
             methodName: method.Name);
         context.ReportDiagnostic(diagnostic: diagnostic);

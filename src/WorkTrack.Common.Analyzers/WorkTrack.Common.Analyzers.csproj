@@ -12,7 +12,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <PackageId>WorkTrack.Common.Analyzers</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>WorkTrack Team</Authors>
     <Description>Общие Roslyn анализаторы для всех сервисов WorkTrack (WTI0001-WTI0007)</Description>
     <PackageTags>WorkTrack;Analyzers;Roslyn;CodeQuality</PackageTags>
@@ -22,6 +22,8 @@
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <!-- Для анализаторов не нужны lib/ref, только analyzers и buildTransitive -->
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <!-- Отключаем собственные анализаторы для проекта анализаторов -->
+    <NoWarn>$(NoWarn);WTI0001;WTI0002;WTI0004;WTI0005;WTI0006;WTI0007</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,5 +42,18 @@
           Pack="true" 
           PackagePath="buildTransitive\WorkTrack.Common.Analyzers.props" />
   </ItemGroup>
+
+  <!-- Включаем анализаторы в пакет -->
+  <Target Name="AddAnalyzersToPackage" BeforeTargets="GenerateNuspec">
+    <ItemGroup>
+      <_AnalyzerFiles Include="$(TargetPath)" />
+      <_AnalyzerFiles Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    </ItemGroup>
+    <ItemGroup>
+      <_PackageFiles Include="@(_AnalyzerFiles)">
+        <PackagePath>analyzers\dotnet\cs\%(Filename)%(Extension)</PackagePath>
+      </_PackageFiles>
+    </ItemGroup>
+  </Target>
 
 </Project>
