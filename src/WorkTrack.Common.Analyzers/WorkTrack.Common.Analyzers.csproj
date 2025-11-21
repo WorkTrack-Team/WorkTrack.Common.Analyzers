@@ -12,7 +12,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <PackageId>WorkTrack.Common.Analyzers</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>WorkTrack Team</Authors>
     <Description>Общие Roslyn анализаторы для всех сервисов WorkTrack (WTI0001-WTI0007)</Description>
     <PackageTags>WorkTrack;Analyzers;Roslyn;CodeQuality</PackageTags>
