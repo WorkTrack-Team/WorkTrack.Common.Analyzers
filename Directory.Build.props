@@ -1,0 +1,88 @@
+<Project>
+  <!-- 
+    Этот файл предназначен для включения в другие проекты через ссылку на пакет WorkTrack.Common.Analyzers.
+    Он НЕ должен использоваться напрямую в самом пакете анализаторов.
+    
+    Для использования в сервисах:
+    1. Добавьте ссылку на WorkTrack.Common.Analyzers
+    2. Скопируйте этот Directory.Build.props в корень вашего сервиса
+    3. Или импортируйте его через <Import> в существующий Directory.Build.props
+  -->
+
+  <!-- Настройки для самого проекта анализаторов -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'WorkTrack.Common.Analyzers'">
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+  <!-- Настройки для всех остальных проектов (применяются при импорте) -->
+  <!-- 
+    ВАЖНО: Эти настройки можно переопределить в локальном Directory.Build.props сервиса.
+    MSBuild импортирует файлы Directory.Build.props снизу вверх по иерархии директорий:
+    1. Сначала корневой Directory.Build.props (если есть)
+    2. Затем из родительских директорий
+    3. Затем из текущей директории
+    
+    Настройки из более глубоких директорий ПЕРЕОПРЕДЕЛЯЮТ настройки из родительских.
+    Просто определите свойство в своем Directory.Build.props после импорта этого файла.
+  -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'WorkTrack.Common.Analyzers'">
+    <!-- Базовые настройки - можно переопределить в локальном Directory.Build.props -->
+    <!-- Используем Condition для установки только если свойство еще не определено -->
+    <ManagePackageVersionsCentrally Condition="'$(ManagePackageVersionsCentrally)' == ''">true</ManagePackageVersionsCentrally>
+    <TreatWarningsAsErrors Condition="'$(TreatWarningsAsErrors)' == ''">true</TreatWarningsAsErrors>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">net9.0</TargetFramework>
+    <ImplicitUsings Condition="'$(ImplicitUsings)' == ''">enable</ImplicitUsings>
+    <Nullable Condition="'$(Nullable)' == ''">enable</Nullable>
+    <AnalysisMode Condition="'$(AnalysisMode)' == ''">AllEnabledByDefault</AnalysisMode>
+    <EnforceCodeStyleInBuild Condition="'$(EnforceCodeStyleInBuild)' == ''">true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile Condition="'$(GenerateDocumentationFile)' == ''">true</GenerateDocumentationFile>
+    <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+    <StyleCopTreatErrorsAsWarnings Condition="'$(StyleCopTreatErrorsAsWarnings)' == ''">false</StyleCopTreatErrorsAsWarnings>
+    <StyleCopEnabled Condition="'$(StyleCopEnabled)' == ''">true</StyleCopEnabled>
+    <StyleCopAnalyzersSettingsFile Condition="'$(StyleCopAnalyzersSettingsFile)' == '' AND Exists('$(MSBuildThisFileDirectory)stylecop.json')">$(MSBuildThisFileDirectory)stylecop.json</StyleCopAnalyzersSettingsFile>
+  </PropertyGroup>
+
+  <!-- Настройки для тестовых проектов -->
+  <PropertyGroup Condition="$([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Tests'))">
+    <NoWarn>$(NoWarn);WTI0001</NoWarn>
+  </PropertyGroup>
+
+  <!-- Подключение stylecop.json (если существует) -->
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)stylecop.json')">
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" />
+  </ItemGroup>
+
+  <!-- Подключение анализаторов для всех проектов кроме самого пакета анализаторов -->
+  <!-- 
+    ВАЖНО: MSBuild применяет ItemGroup в порядке импорта файлов.
+    Если вы хотите переопределить подключение анализаторов в своем Directory.Build.props,
+    просто определите свои ProjectReference/PackageReference ДО импорта этого файла,
+    или используйте условие для исключения дублирования.
+  -->
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'WorkTrack.Common.Analyzers'">
+    <!-- Если используется как проект (для разработки) -->
+    <ProjectReference Condition="Exists('$(MSBuildThisFileDirectory)src/WorkTrack.Common.Analyzers/WorkTrack.Common.Analyzers.csproj')" 
+                      Include="$(MSBuildThisFileDirectory)src/WorkTrack.Common.Analyzers/WorkTrack.Common.Analyzers.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"
+                      IsAspireProjectResource="false" />
+  </ItemGroup>
+
+  <!-- Подключение стандартных анализаторов -->
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'WorkTrack.Common.Analyzers'">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
+    <PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="AsyncFixer" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
+

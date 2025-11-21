@@ -1,0 +1,40 @@
+# WorkTrack.Common.Analyzers Configuration
+# Настройки для анализаторов WorkTrack.Common.Analyzers
+
+root = true
+
+[*.cs]
+# ==========================================
+# Настройки WorkTrack.Common.Analyzers
+# ==========================================
+
+# Настройка максимального количества строк в методе (WTI0001)
+# По умолчанию: 5 строк, можно изменить для конкретного проекта
+wt_common_method_length_max_lines = 5
+
+# Настройка целевых префиксов проектов для анализаторов (WTI0001)
+# По умолчанию: WorkTrack.* (все проекты WorkTrack)
+# Можно указать несколько префиксов через запятую или точку с запятой
+wt_common_analyzer_target_prefixes = WorkTrack.
+
+# Уровни серьезности для анализаторов WorkTrack
+# Возможные значения: error, warning, suggestion, silent, none
+dotnet_diagnostic.WTI0001.severity = error
+dotnet_diagnostic.WTI0002.severity = error
+dotnet_diagnostic.WTI0004.severity = error
+dotnet_diagnostic.WTI0005.severity = error
+dotnet_diagnostic.WTI0006.severity = error
+dotnet_diagnostic.WTI0007.severity = error
+
+# Примеры настройки для разных проектов или файлов:
+# [WorkTrack.Identity/**/*.cs]
+# dotnet_analyzer_diagnostic.wt_common_method_length_max_lines = 5
+# dotnet_diagnostic.WTI0001.severity = error
+#
+# [WorkTrack.TemplateService/**/*.cs]
+# dotnet_analyzer_diagnostic.wt_common_method_length_max_lines = 5
+# dotnet_diagnostic.WTI0001.severity = error
+#
+# [tests/**/*.cs]
+# dotnet_diagnostic.WTI0001.severity = none
+# dotnet_analyzer_diagnostic.wt_common_method_length_max_lines = 100

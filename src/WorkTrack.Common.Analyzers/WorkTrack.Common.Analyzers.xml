@@ -1,0 +1,250 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WorkTrack.Common.Analyzers</name>
+    </assembly>
+    <members>
+        <member name="T:WorkTrack.Common.Analyzers.AnalyzerConfiguration">
+            <summary>
+            Конфигурация анализатора, инкапсулирующая настройки из .editorconfig.
+            Применяет принцип инкапсуляции для централизованного управления конфигурацией.
+            </summary>
+        </member>
+        <member name="P:WorkTrack.Common.Analyzers.AnalyzerConfiguration.MaxMethodLines">
+            <summary>
+            Максимальное количество строк в теле метода.
+            </summary>
+        </member>
+        <member name="P:WorkTrack.Common.Analyzers.AnalyzerConfiguration.TargetPrefixes">
+            <summary>
+            Префиксы проектов, на которые распространяется анализ.
+            </summary>
+        </member>
+        <member name="P:WorkTrack.Common.Analyzers.AnalyzerConfiguration.ExcludeTests">
+            <summary>
+            Исключать ли тестовые сборки из анализа.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.AnalyzerConfiguration.LoadFrom(Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider,Microsoft.CodeAnalysis.SyntaxTree)">
+            <summary>
+            Загружает конфигурацию из AnalyzerConfigOptions.
+            </summary>
+            <param name="optionsProvider">Провайдер опций конфигурации анализатора.</param>
+            <param name="syntaxTree">Синтаксическое дерево для получения конфигурации.</param>
+            <returns>Загруженная конфигурация.</returns>
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.AnalyzerHelpers">
+            <summary>
+            Вспомогательные методы для анализаторов.
+            Централизует общую логику для устранения дублирования кода (DRY принцип).
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.AnalyzerHelpers.IsTestAssembly(Microsoft.CodeAnalysis.Compilation)">
+            <summary>
+            Проверяет, является ли сборка тестовой.
+            Оптимизировано с использованием кэширования и SkipLocalsInit для производительности.
+            </summary>
+            <param name="compilation">Компиляция для проверки.</param>
+            <returns>True, если сборка является тестовой.</returns>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.AnalyzerHelpers.IsTestFile(System.String)">
+            <summary>
+            Проверяет, является ли файл тестовым по пути.
+            Оптимизировано с использованием Span для лучшей производительности.
+            </summary>
+            <param name="filePath">Путь к файлу.</param>
+            <returns>True, если файл является тестовым.</returns>
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.AsyncSuffixAnalyzer">
+            <summary>
+            Анализирует методы и требует суффикс Async для Task/ValueTask методов в прод-коде.
+            </summary>
+        </member>
+        <member name="F:WorkTrack.Common.Analyzers.AsyncSuffixAnalyzer._diagnosticId">
+            <summary>
+            Диагностический идентификатор правила.
+            </summary>
+        </member>
+        <member name="P:WorkTrack.Common.Analyzers.AsyncSuffixAnalyzer.SupportedDiagnostics">
+            <inheritdoc />
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.AsyncSuffixAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.AsyncSuffixAnalyzer.ImplementsInterfaceMember(Microsoft.CodeAnalysis.IMethodSymbol)">
+            <summary>
+            Проверяет, реализует ли метод член интерфейса.
+            Оптимизировано для производительности на больших проектах.
+            </summary>
+            <param name="method">Символ метода для проверки.</param>
+            <returns>True, если метод реализует член интерфейса.</returns>
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.DiagnosticFactory">
+            <summary>
+            Фабрика для создания диагностик анализаторов.
+            Применяет Factory Pattern для централизованного создания диагностик.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.DiagnosticFactory.CreateMethodTooLong(Microsoft.CodeAnalysis.DiagnosticDescriptor,Microsoft.CodeAnalysis.Location,System.Int32,System.Int32)">
+            <summary>
+            Создает диагностику для слишком длинного метода.
+            </summary>
+            <param name="rule">Правило диагностики.</param>
+            <param name="location">Местоположение диагностики.</param>
+            <param name="actualLines">Фактическое количество строк.</param>
+            <param name="maxLines">Максимально допустимое количество строк.</param>
+            <returns>Созданная диагностика.</returns>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.DiagnosticFactory.CreateMissingAsyncSuffix(Microsoft.CodeAnalysis.DiagnosticDescriptor,Microsoft.CodeAnalysis.Location,System.String)">
+            <summary>
+            Создает диагностику для отсутствия суффикса Async.
+            </summary>
+            <param name="rule">Правило диагностики.</param>
+            <param name="location">Местоположение диагностики.</param>
+            <param name="methodName">Имя метода.</param>
+            <returns>Созданная диагностика.</returns>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.DiagnosticFactory.CreateMissingGuardClause(Microsoft.CodeAnalysis.DiagnosticDescriptor,Microsoft.CodeAnalysis.Location,System.String)">
+            <summary>
+            Создает диагностику для отсутствия Guard.Against.
+            </summary>
+            <param name="rule">Правило диагностики.</param>
+            <param name="location">Местоположение диагностики.</param>
+            <param name="methodName">Имя метода или конструктора.</param>
+            <returns>Созданная диагностика.</returns>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.DiagnosticFactory.CreateForbiddenDateTimeProperty(Microsoft.CodeAnalysis.DiagnosticDescriptor,Microsoft.CodeAnalysis.Location,System.String)">
+            <summary>
+            Создает диагностику для использования запрещенного DateTime свойства.
+            </summary>
+            <param name="rule">Правило диагностики.</param>
+            <param name="location">Местоположение диагностики.</param>
+            <param name="propertyName">Имя запрещенного свойства.</param>
+            <returns>Созданная диагностика.</returns>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.DiagnosticFactory.CreateInvalidNamespaceStyle(Microsoft.CodeAnalysis.DiagnosticDescriptor,Microsoft.CodeAnalysis.Location,System.String)">
+            <summary>
+            Создает диагностику для неправильного стиля пространства имен.
+            </summary>
+            <param name="rule">Правило диагностики.</param>
+            <param name="location">Местоположение диагностики.</param>
+            <param name="namespaceName">Имя пространства имен.</param>
+            <returns>Созданная диагностика.</returns>
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.ForbiddenDateTimeAnalyzer">
+            <summary>
+            Предотвращает прямое обращение к DateTime/DateTimeOffset в продуктивном коде.
+            </summary>
+        </member>
+        <member name="F:WorkTrack.Common.Analyzers.ForbiddenDateTimeAnalyzer.DiagnosticId">
+            <summary>
+            Диагностический идентификатор правила.
+            </summary>
+        </member>
+        <member name="P:WorkTrack.Common.Analyzers.ForbiddenDateTimeAnalyzer.SupportedDiagnostics">
+            <inheritdoc />
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.ForbiddenDateTimeAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.GuardClauseAnalyzer">
+            <summary>
+            Контролирует наличие Guard.Against в начале публичных методов.
+            </summary>
+        </member>
+        <member name="F:WorkTrack.Common.Analyzers.GuardClauseAnalyzer.DiagnosticId">
+            <summary>
+            Диагностический идентификатор.
+            </summary>
+        </member>
+        <member name="P:WorkTrack.Common.Analyzers.GuardClauseAnalyzer.SupportedDiagnostics">
+            <inheritdoc />
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.GuardClauseAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.MethodLengthAnalyzer">
+            <summary>
+            Анализатор, гарантирующий, что тела методов не превышают пяти строк.
+            </summary>
+        </member>
+        <member name="F:WorkTrack.Common.Analyzers.MethodLengthAnalyzer.DiagnosticId">
+            <summary>
+            Диагностический идентификатор, используемый для предупреждения о слишком длинных методах.
+            </summary>
+        </member>
+        <member name="P:WorkTrack.Common.Analyzers.MethodLengthAnalyzer.SupportedDiagnostics">
+            <inheritdoc />
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.MethodLengthAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.NamespaceStyleAnalyzer">
+            <summary>
+            Требует file-scoped namespace и контролирует, что в файле только один публичный тип.
+            </summary>
+        </member>
+        <member name="F:WorkTrack.Common.Analyzers.NamespaceStyleAnalyzer._diagnosticIdFileScoped">
+            <summary>
+            Диагностический идентификатор правила file-scoped namespace.
+            </summary>
+        </member>
+        <member name="F:WorkTrack.Common.Analyzers.NamespaceStyleAnalyzer.DiagnosticIdSingleType">
+            <summary>
+            Диагностический идентификатор правила единственного публичного типа.
+            </summary>
+        </member>
+        <member name="P:WorkTrack.Common.Analyzers.NamespaceStyleAnalyzer.SupportedDiagnostics">
+            <inheritdoc />
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.NamespaceStyleAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.SyntaxNodeVisitorBase`1">
+            <summary>
+            Базовый класс для визиторов синтаксических узлов.
+            Применяет Visitor Pattern для обхода синтаксического дерева.
+            </summary>
+            <typeparam name="TContext">Тип контекста анализа.</typeparam>
+        </member>
+        <member name="P:WorkTrack.Common.Analyzers.SyntaxNodeVisitorBase`1.Context">
+            <summary>
+            Контекст анализа.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.SyntaxNodeVisitorBase`1.#ctor(`0)">
+            <summary>
+            Инициализирует новый экземпляр класса.
+            </summary>
+            <param name="context">Контекст анализа.</param>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.SyntaxNodeVisitorBase`1.VisitMethodDeclaration(Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax)">
+            <summary>
+            Анализирует узел метода.
+            </summary>
+            <param name="node">Узел объявления метода.</param>
+            <returns>Диагностика или null, если проблем не обнаружено.</returns>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.SyntaxNodeVisitorBase`1.VisitLocalFunctionStatement(Microsoft.CodeAnalysis.CSharp.Syntax.LocalFunctionStatementSyntax)">
+            <summary>
+            Анализирует локальную функцию.
+            </summary>
+            <param name="node">Узел локальной функции.</param>
+            <returns>Диагностика или null, если проблем не обнаружено.</returns>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.SyntaxNodeVisitorBase`1.AnalyzeMethod(Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax)">
+            <summary>
+            Анализирует объявление метода.
+            </summary>
+            <param name="node">Узел объявления метода.</param>
+            <returns>Диагностика или null, если проблем не обнаружено.</returns>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.SyntaxNodeVisitorBase`1.AnalyzeLocalFunction(Microsoft.CodeAnalysis.CSharp.Syntax.LocalFunctionStatementSyntax)">
+            <summary>
+            Анализирует локальную функцию.
+            </summary>
+            <param name="node">Узел локальной функции.</param>
+            <returns>Диагностика или null, если проблем не обнаружено.</returns>
+        </member>
+    </members>
+</doc>

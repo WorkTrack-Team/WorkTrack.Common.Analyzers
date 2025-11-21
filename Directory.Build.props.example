@@ -1,0 +1,45 @@
+<Project>
+  <!-- 
+    ПРИМЕР: Как использовать WorkTrack.Common.Analyzers в вашем сервисе
+    
+    Вариант 1: Импортировать через <Import> (рекомендуется)
+    Добавьте в начало вашего Directory.Build.props:
+    
+    <Import Project="../../WorkTrack.Common.Analyzers/Directory.Build.props" Condition="Exists('../../WorkTrack.Common.Analyzers/Directory.Build.props')" />
+    
+    Вариант 2: Скопировать содержимое и адаптировать под свой сервис
+    
+    Вариант 3: Использовать как NuGet пакет (когда будет опубликован)
+  -->
+
+  <!-- 
+    ПЕРЕОПРЕДЕЛЕНИЕ НАСТРОЕК:
+    Вы можете переопределить любые свойства из WorkTrack.Common.Analyzers,
+    просто определив их после импорта. MSBuild применяет файлы снизу вверх,
+    поэтому ваши настройки будут иметь приоритет.
+  -->
+
+  <!-- Пример: изменить TargetFramework для конкретного сервиса -->
+  <PropertyGroup>
+    <!-- Это переопределит net9.0 из WorkTrack.Common.Analyzers -->
+    <!-- <TargetFramework>net8.0</TargetFramework> -->
+  </PropertyGroup>
+
+  <!-- Пример: отключить TreatWarningsAsErrors для разработки -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <!-- <TreatWarningsAsErrors>false</TreatWarningsAsErrors> -->
+  </PropertyGroup>
+
+  <!-- Пример: добавить дополнительные NoWarn -->
+  <PropertyGroup Condition="$([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Tests'))">
+    <!-- Дополнительные предупреждения для тестов -->
+    <!-- <NoWarn>$(NoWarn);CA2007;MA0004</NoWarn> -->
+  </PropertyGroup>
+
+  <!-- 
+    ВАЖНО: Анализаторы подключаются автоматически через условие.
+    Не нужно дублировать ProjectReference или PackageReference для анализаторов,
+    если они уже подключены через WorkTrack.Common.Analyzers.
+  -->
+</Project>
+

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WorkTrack.Common.Analyzers.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:WorkTrack.Common.Analyzers.Tests.AnalyzerHelpersTests">
+            <summary>
+            Unit-тесты для <see cref="T:WorkTrack.Common.Analyzers.AnalyzerHelpers"/>.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AnalyzerHelpersTests.IsTestAssembly_WithTestsInName_ReturnsTrue">
+            <summary>
+            Проверяет, что IsTestAssembly корректно определяет тестовые сборки.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AnalyzerHelpersTests.IsTestAssembly_WithoutTestsInName_ReturnsFalse">
+            <summary>
+            Проверяет, что IsTestAssembly возвращает false для обычных сборок.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.AnalyzerHelpersTests.IsTestFile_VariousPaths_ReturnsExpected(System.String,System.Boolean)">
+            <summary>
+            Проверяет, что IsTestFile корректно определяет тестовые файлы.
+            </summary>
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests">
+            <summary>
+            Unit-тесты для <see cref="T:WorkTrack.Common.Analyzers.GuardClauseAnalyzer"/>.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.PublicMethodWithoutGuard_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает об отсутствии Guard.Against в публичном методе с параметрами.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.PublicMethodWithGuard_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает об ошибке, если метод начинается с Guard.Against.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.PrivateMethod_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет приватные методы.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.GuardClauseAnalyzerTests.MethodWithoutParameters_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не проверяет методы без параметров.
+            </summary>
+        </member>
+        <member name="T:WorkTrack.Common.Analyzers.Tests.MethodLengthAnalyzerTests">
+            <summary>
+            Unit-тесты для <see cref="T:WorkTrack.Common.Analyzers.MethodLengthAnalyzer"/>.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.MethodLengthAnalyzerTests.MethodExceedingLimit_ReportsDiagnostic">
+            <summary>
+            Проверяет, что анализатор сообщает о методе, превышающем лимит строк.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.MethodLengthAnalyzerTests.MethodWithinLimit_NoDiagnostic">
+            <summary>
+            Проверяет, что анализатор не сообщает о методе в пределах лимита.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.MethodLengthAnalyzerTests.ExpressionBodiedMethod_NoDiagnostic">
+            <summary>
+            Проверяет, что expression-bodied методы не проверяются.
+            </summary>
+        </member>
+        <member name="M:WorkTrack.Common.Analyzers.Tests.MethodLengthAnalyzerTests.CustomMaxLinesFromEditorConfig_RespectsConfiguration">
+            <summary>
+            Проверяет, что анализатор читает конфигурацию из .editorconfig.
+            </summary>
+        </member>
+    </members>
+</doc>

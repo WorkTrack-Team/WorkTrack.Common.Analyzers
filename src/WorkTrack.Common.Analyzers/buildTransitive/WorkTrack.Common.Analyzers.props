@@ -1,0 +1,55 @@
+<Project>
+  <!-- 
+    Этот файл автоматически импортируется при установке пакета WorkTrack.Common.Analyzers.
+    Он применяет общие настройки анализаторов для всех проектов, которые ссылаются на этот пакет.
+    
+    ВАЖНО: Эти настройки можно переопределить в локальном Directory.Build.props проекта.
+    MSBuild импортирует файлы в следующем порядке:
+    1. buildTransitive/*.props из NuGet пакетов (этот файл)
+    2. Directory.Build.props из иерархии директорий (снизу вверх)
+    3. Проект .csproj
+    
+    Настройки из Directory.Build.props и .csproj ПЕРЕОПРЕДЕЛЯЮТ настройки из этого файла.
+  -->
+
+  <!-- Настройки для всех проектов, которые используют этот пакет -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'WorkTrack.Common.Analyzers'">
+    <!-- Базовые настройки - можно переопределить в локальном Directory.Build.props -->
+    <!-- Используем Condition для установки только если свойство еще не определено -->
+    <ManagePackageVersionsCentrally Condition="'$(ManagePackageVersionsCentrally)' == ''">true</ManagePackageVersionsCentrally>
+    <TreatWarningsAsErrors Condition="'$(TreatWarningsAsErrors)' == ''">true</TreatWarningsAsErrors>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">net9.0</TargetFramework>
+    <ImplicitUsings Condition="'$(ImplicitUsings)' == ''">enable</ImplicitUsings>
+    <Nullable Condition="'$(Nullable)' == ''">enable</Nullable>
+    <AnalysisMode Condition="'$(AnalysisMode)' == ''">AllEnabledByDefault</AnalysisMode>
+    <EnforceCodeStyleInBuild Condition="'$(EnforceCodeStyleInBuild)' == ''">true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile Condition="'$(GenerateDocumentationFile)' == ''">true</GenerateDocumentationFile>
+    <DocumentationFile Condition="'$(DocumentationFile)' == ''">$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+    <StyleCopTreatErrorsAsWarnings Condition="'$(StyleCopTreatErrorsAsWarnings)' == ''">false</StyleCopTreatErrorsAsWarnings>
+    <StyleCopEnabled Condition="'$(StyleCopEnabled)' == ''">true</StyleCopEnabled>
+  </PropertyGroup>
+
+  <!-- Настройки для тестовых проектов -->
+  <PropertyGroup Condition="$([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Tests'))">
+    <NoWarn Condition="'$(NoWarn)' != ''">$(NoWarn);WTI0001</NoWarn>
+    <NoWarn Condition="'$(NoWarn)' == ''">WTI0001</NoWarn>
+  </PropertyGroup>
+
+  <!-- Подключение стандартных анализаторов (только если еще не подключены) -->
+  <!-- 
+    ВАЖНО: Эти PackageReference добавляются только если пакеты еще не подключены в проекте.
+    Это позволяет переопределить в локальном Directory.Build.props или .csproj без дублирования.
+  -->
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'WorkTrack.Common.Analyzers'">
+    <!-- Проверяем, что пакеты еще не добавлены через условие на отсутствие PackageReference -->
+    <PackageReference Condition="'@(PackageReference->WithMetadataValue('Identity', 'Microsoft.CodeAnalysis.NetAnalyzers')->Count())' == '0'" 
+                      Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
+    <PackageReference Condition="'@(PackageReference->WithMetadataValue('Identity', 'Meziantou.Analyzer')->Count())' == '0'" 
+                      Include="Meziantou.Analyzer" PrivateAssets="all" />
+    <PackageReference Condition="'@(PackageReference->WithMetadataValue('Identity', 'Roslynator.Analyzers')->Count())' == '0'" 
+                      Include="Roslynator.Analyzers" PrivateAssets="all" />
+    <PackageReference Condition="'@(PackageReference->WithMetadataValue('Identity', 'AsyncFixer')->Count())' == '0'" 
+                      Include="AsyncFixer" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
+
