@@ -84,12 +84,9 @@ public sealed class AsyncSuffixAnalyzer : DiagnosticAnalyzer
     private static bool ShouldAnalyzeMethod(IMethodSymbol method)
     {
         return method.MethodKind == MethodKind.Ordinary
-            && method.Name.IndexOf(value: '<') < 0
-            && !method.IsOverride
-            && !method.IsAbstract
-            && !method.IsExtern
-            && !method.IsImplicitlyDeclared
-            && !ImplementsInterfaceMember(method: method);
+               && method.Name.IndexOf(value: '<') < 0
+               && method is { IsOverride: false, IsAbstract: false, IsExtern: false, IsImplicitlyDeclared: false }
+               && !ImplementsInterfaceMember(method: method);
     }
 
     private static bool IsAsyncLike(IMethodSymbol method)

@@ -107,7 +107,7 @@ public sealed class GuardClauseAnalyzer : DiagnosticAnalyzer
             expression = awaitExpression.Expression;
         }
 
-        if (expression is InvocationExpressionSyntax invocation && invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+        if (expression is InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess })
         {
             var guardType = memberAccess.Expression.ToString();
             var memberName = memberAccess.Name.Identifier.ValueText;
