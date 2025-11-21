@@ -2,7 +2,7 @@
 
 Общие Roslyn анализаторы и настройки для всех сервисов WorkTrack.
 
-**Версия**: 1.0.3  
+**Версия**: 1.0.4  
 **Статус**: ✅ Готов к использованию
 
 ## Описание
@@ -101,7 +101,7 @@ dotnet_diagnostic.WTI0001.severity = none
 Добавьте версию пакета в `Directory.Packages.props` (если используется централизованное управление):
 ```xml
 <ItemGroup>
-       <PackageVersion Include="WorkTrack.Common.Analyzers" Version="1.0.3" />
+       <PackageVersion Include="WorkTrack.Common.Analyzers" Version="1.0.4" />
 </ItemGroup>
 ```
 
@@ -127,14 +127,14 @@ dotnet_diagnostic.WTI0001.severity = none
 ```powershell
 $projects = Get-ChildItem -Recurse -Filter "*.csproj" | Where-Object { $_.FullName -notmatch "Tests|WorkTrack.Common.Analyzers" }
 foreach ($project in $projects) {
-    dotnet add $project.FullName package WorkTrack.Common.Analyzers --version 1.0.3
+    dotnet add $project.FullName package WorkTrack.Common.Analyzers --version 1.0.4
 }
 ```
 
 **Bash:**
 ```bash
 find . -name "*.csproj" -not -path "*/Tests/*" -not -path "*/WorkTrack.Common.Analyzers/*" | while read proj; do
-    dotnet add "$proj" package WorkTrack.Common.Analyzers --version 1.0.3
+    dotnet add "$proj" package WorkTrack.Common.Analyzers --version 1.0.4
 done
 ```
 
