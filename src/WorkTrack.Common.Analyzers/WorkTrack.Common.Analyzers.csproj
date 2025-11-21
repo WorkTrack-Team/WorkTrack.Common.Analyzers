@@ -23,6 +23,7 @@
     <!-- Для анализаторов не нужны lib/ref, только analyzers и buildTransitive -->
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <!-- Отключаем собственные анализаторы для проекта анализаторов -->
+    <!-- Также отключены в .editorconfig через [WorkTrack.Common.Analyzers/**/*.cs] -->
     <NoWarn>$(NoWarn);WTI0001;WTI0002;WTI0004;WTI0005;WTI0006;WTI0007</NoWarn>
   </PropertyGroup>
 

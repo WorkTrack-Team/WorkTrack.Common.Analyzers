@@ -73,7 +73,7 @@ dotnet_diagnostic.AsyncFixer03.severity = error
 dotnet_diagnostic.IDE0079.severity = error
 
 # ==========================================
-# Настройки для тестов
+# Настройки для тестов (как в WorkTrack.Identity)
 # ==========================================
 
 [tests/**/*.cs]
@@ -81,9 +81,23 @@ dotnet_diagnostic.CA2007.severity = none
 dotnet_diagnostic.MA0004.severity = none
 dotnet_diagnostic.xUnit1030.severity = none
 dotnet_diagnostic.WTI0001.severity = none
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1508.severity = none
+dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.CA1507.severity = none
+dotnet_diagnostic.AsyncFixer01.severity = none
+dotnet_diagnostic.CA1859.severity = none
 
 [Tests/**/*.cs]
 dotnet_diagnostic.CA2007.severity = none
 dotnet_diagnostic.MA0004.severity = none
 dotnet_diagnostic.xUnit1030.severity = none
 dotnet_diagnostic.WTI0001.severity = none
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1508.severity = none
+dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.CA1507.severity = none
+dotnet_diagnostic.AsyncFixer01.severity = none
+dotnet_diagnostic.CA1859.severity = none
